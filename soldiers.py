@@ -18,7 +18,7 @@ class soldier:
             self.dna = dna 
 
         if fertility == None:
-            self.fertility = .60
+            self.fertility = .70
         else:
             self.fertility = fertility
 
@@ -235,7 +235,6 @@ def main():
     iterations = 200
 
     abel = soldier('0', baseHealth = 10)
-
     cain = soldier('1', baseHealth = 13)
 
     soldiers.append(abel)
