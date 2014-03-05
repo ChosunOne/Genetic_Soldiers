@@ -9,7 +9,7 @@ random.seed()
 class soldier:
     def __init__(self, name = None, baseHealth = None, health = None, damage = None, armor = None, dna = None):
 
-        self.id = random.randint(0, 100000000000)
+        self.id = random.random() * 100000000000
         self.wins = 0
 
         if dna == None:
@@ -54,14 +54,14 @@ class soldier:
 
 def reproduce(sol):
     MUTATE_THRESHOLD = 15
-    mutate = random.randint(0, 100)
-    offspring = soldier(str(int(sol.name) + random.randint(1, 10)), sol.baseHealth, sol.damage, sol.armor, dna = sol.dna)
+    mutate = random.random() * 10000
+    offspring = soldier(str(int(sol.name) + int(random.random() * 10)), sol.baseHealth, sol.damage, sol.armor, dna = sol.dna)
 
     if mutate <= MUTATE_THRESHOLD:
         offspring.name = str(int(offspring.name) + 100)
         offspring.dna += 'N'
 
-    mutate = random.randint(0, 100)
+    mutate = random.random() * 10000
 
     if mutate <= MUTATE_THRESHOLD:
         old = offspring.baseHealth
@@ -72,7 +72,7 @@ def reproduce(sol):
         else:
             offspring.dna += 'h'
 
-    mutate = random.randint(0, 100)
+    mutate = random.random() * 10000
 
     if mutate <= MUTATE_THRESHOLD:
         old = offspring.damage
@@ -85,7 +85,7 @@ def reproduce(sol):
     if offspring.damage <= 0:
             offspring.damage = 1
     
-    mutate = random.randint(0, 100)
+    mutate = random.random() * 10000
     
     if mutate <= MUTATE_THRESHOLD:
         old = offspring.armor
@@ -109,7 +109,7 @@ def fight(sol1, sol2):
         winner = sol1
         return sol1
 
-    first = random.randint(1, 2)
+    first = random.random()
 
 #    print('Health of', sol1.name, sol1.health)
 #    print('Armor of', sol1.name, sol1.armor)
@@ -121,7 +121,7 @@ def fight(sol1, sol2):
 
     rounds = 0
 
-    if first == 1:
+    if first > .5:
         while (sol1.health > 0) and (sol2.health > 0) and (rounds < 3000):
             sol1.attack(sol2)
             if sol2.health > 0:
