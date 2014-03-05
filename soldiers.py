@@ -53,7 +53,7 @@ class soldier:
             #print(soldier.name, 'now has', soldier.health, 'health')
 
 def reproduce(sol):
-    MUTATE_THRESHOLD = 15
+    MUTATE_THRESHOLD = 2
     mutate = int(random.random() * 100)
     offspring = soldier(str(int(sol.name) + int(random.random() * 10)), sol.baseHealth, sol.damage, sol.armor, dna = sol.dna)
 
@@ -182,7 +182,7 @@ def main():
     soldiers = []
     varieties = []
     primeDNA = {}
-    iterations = 10
+    iterations = 16
 
     abel = soldier('0', baseHealth = 10)
 
@@ -197,6 +197,7 @@ def main():
         winner_list = []
 
         print('Round', x, 'of', iterations)
+        print('Population:', len(soldiers))
 
         for match in matches:
 
@@ -216,7 +217,7 @@ def main():
 
         for victor in winner_list:
             victor.health = victor.baseHealth
-            for k in range(0, 4):
+            for k in range(0, 3):
                 soldiers.append(reproduce(victor))
 
         for fighter in soldiers:
