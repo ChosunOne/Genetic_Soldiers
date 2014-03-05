@@ -1,7 +1,7 @@
 import random
 import pdb
 
-pdb.set_trace()
+#pdb.set_trace()
 
 random.seed()
 
@@ -174,7 +174,7 @@ def main():
 
 		soldiers = winner_list.copy()
 
-		for victor in soldiers:
+		for victor in winner_list:
 			victor.health = victor.baseHealth
 			for k in range(0, 3):
 				print(k)
