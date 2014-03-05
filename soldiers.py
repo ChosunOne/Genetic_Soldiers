@@ -54,14 +54,14 @@ class soldier:
 
 def reproduce(sol):
     MUTATE_THRESHOLD = 15
-    mutate = random.random() * 10000
+    mutate = int(random.random() * 100)
     offspring = soldier(str(int(sol.name) + int(random.random() * 10)), sol.baseHealth, sol.damage, sol.armor, dna = sol.dna)
 
     if mutate <= MUTATE_THRESHOLD:
         offspring.name = str(int(offspring.name) + 100)
         offspring.dna += 'N'
 
-    mutate = random.random() * 10000
+    mutate = int(random.random() * 100)
 
     if mutate <= MUTATE_THRESHOLD:
         old = offspring.baseHealth
@@ -72,7 +72,7 @@ def reproduce(sol):
         else:
             offspring.dna += 'h'
 
-    mutate = random.random() * 10000
+    mutate = int(random.random() * 100)
 
     if mutate <= MUTATE_THRESHOLD:
         old = offspring.damage
@@ -85,7 +85,7 @@ def reproduce(sol):
     if offspring.damage <= 0:
             offspring.damage = 1
     
-    mutate = random.random() * 10000
+    mutate = int(random.random() * 100)
     
     if mutate <= MUTATE_THRESHOLD:
         old = offspring.armor
