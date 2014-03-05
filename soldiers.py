@@ -7,7 +7,7 @@ from collections import OrderedDict
 random.seed()
 
 class soldier:
-    def __init__(self, name = None, baseHealth = None, health = None, damage = None, armor = None, dna = None):
+    def __init__(self, name = None, baseHealth = None, health = None, damage = None, armor = None, accuracy = None, fertility = None, dna = None):
 
         self.id = random.random() * 100000000000
         self.wins = 0
@@ -16,6 +16,11 @@ class soldier:
             self.dna = ''
         else:
             self.dna = dna 
+
+        if fertility == None:
+            self.fertility = .80
+        else:
+            self.fertility = fertility
 
         if name == None:
             self.name = '0'
@@ -37,6 +42,11 @@ class soldier:
         else:
             self.damage = damage
 
+        if accuracy == None:
+            self.accuracy = .5
+        else:
+            self.accuracy = accuracy
+
         if armor == None:
             self.armor = 0
         else:
@@ -46,59 +56,98 @@ class soldier:
         if self.damage - soldier.armor <= 0:
             pass
         else:
-            soldier.health = soldier.health - (self.damage - soldier.armor)
+            roll = random.random()
+            if roll < self.accuracy:
+                soldier.health = soldier.health - (self.damage - soldier.armor)
 
             #DEBUG
             #print(self.name, 'attacked', soldier.name, 'for', self.damage - soldier.armor, 'damage.')
             #print(soldier.name, 'now has', soldier.health, 'health')
 
 def reproduce(sol):
-    MUTATE_THRESHOLD = 2
-    mutate = int(random.random() * 100)
-    offspring = soldier(str(int(sol.name) + int(random.random() * 10)), sol.baseHealth, sol.damage, sol.armor, dna = sol.dna)
+    fertile = random.random()
+    if fertile < sol.fertility:
+        MUTATE_THRESHOLD = 2
+        mutate = int(random.random() * 100)
+        offspring = soldier(name = str(int(sol.name) + int(random.random() * 10)), 
+                            baseHealth = sol.baseHealth, 
+                            damage = sol.damage, 
+                            armor = sol.armor, 
+                            accuracy = sol.accuracy, 
+                            fertility = sol.fertility, 
+                            dna = sol.dna)
 
-    if mutate <= MUTATE_THRESHOLD:
-        offspring.name = str(int(offspring.name) + 100)
-        offspring.dna += 'N'
+        if mutate <= MUTATE_THRESHOLD:
+            offspring.name = str(int(offspring.name) + 100)
+            offspring.dna += 'N'
 
-    mutate = int(random.random() * 100)
+        mutate = int(random.random() * 100)
 
-    if mutate <= MUTATE_THRESHOLD:
-        old = offspring.baseHealth
-        offspring.baseHealth = random.randint(offspring.baseHealth - 5, offspring.baseHealth + 5)
-        offspring.health = offspring.baseHealth
-        if old < offspring.baseHealth:
-            offspring.dna += 'H'
-        else:
-            offspring.dna += 'h'
+        if mutate <= MUTATE_THRESHOLD:
+            old = offspring.baseHealth
+            offspring.baseHealth = random.randint(offspring.baseHealth - 5, offspring.baseHealth + 5)
+            offspring.health = offspring.baseHealth
+            if old < offspring.baseHealth:
+                offspring.dna += 'H'
+            else:
+                offspring.dna += 'h'
 
-    mutate = int(random.random() * 100)
+        mutate = int(random.random() * 100)
 
-    if mutate <= MUTATE_THRESHOLD:
-        old = offspring.damage
-        offspring.damage = random.randint(offspring.damage - 1, offspring.damage + 1)
-        if old < offspring.damage:
-            offspring.dna += 'D'
-        else:
-            offspring.dna += 'd'
+        if mutate <= MUTATE_THRESHOLD:
+            old = offspring.damage
+            offspring.damage = random.randint(offspring.damage - 1, offspring.damage + 1)
+            if old < offspring.damage:
+                offspring.dna += 'D'
+            else:
+                offspring.dna += 'd'
 
-    if offspring.damage <= 0:
-            offspring.damage = 1
+        if offspring.damage <= 0:
+                offspring.damage = 1
     
-    mutate = int(random.random() * 100)
+        mutate = int(random.random() * 100)
     
-    if mutate <= MUTATE_THRESHOLD:
-        old = offspring.armor
-        offspring.armor = random.randint(offspring.armor - 1, offspring.armor + 1)
-        if old < offspring.armor:
-            offspring.dna += 'A'
-        else:
-            offspring.dna += 'a'
+        if mutate <= MUTATE_THRESHOLD:
+            old = offspring.armor
+            offspring.armor = random.randint(offspring.armor - 1, offspring.armor + 1)
+            if old < offspring.armor:
+                offspring.dna += 'R'
+            else:
+                offspring.dna += 'r'
 
-    if offspring.armor < 0:
-        offspring.armor = 0
+        if offspring.armor < 0:
+            offspring.armor = 0
 
-    return offspring
+        mutate = int(random.random() * 100)
+
+        if mutate <= MUTATE_THRESHOLD:
+            old = offspring.accuracy
+            offspring.accuracy = offspring.accuracy + (random.random() - .5) * .1
+            if offspring.accuracy > 1:
+                offpsring.accuracy = 1
+            elif offspring.accuracy < 0:
+                offspring.accuracy = 0
+            if old < offspring.accuracy:
+                offspring.dna += 'A'
+            else:
+                offspring.dna += 'a'
+
+        mutate = int(random.random() * 100)
+
+        if mutate <= MUTATE_THRESHOLD:
+            old = offspring.fertility
+            offspring.fertility = offspring.fertility + (random.random() - .5) * .02
+            if offspring.fertility > 1:
+                offspring.fertility = 1
+            elif offspring.fertility < 0:
+                offspring.fertility = 0
+            if old < offspring.fertility:
+                offspring.dna += 'F'
+            else:
+                offspring.dna += 'f'
+
+        return offspring
+    return None
 
 def fight(sol1, sol2):
 
@@ -182,7 +231,7 @@ def main():
     soldiers = []
     varieties = []
     primeDNA = {}
-    iterations = 16
+    iterations = 17
 
     abel = soldier('0', baseHealth = 10)
 
@@ -218,7 +267,9 @@ def main():
         for victor in winner_list:
             victor.health = victor.baseHealth
             for k in range(0, 3):
-                soldiers.append(reproduce(victor))
+                offspring = reproduce(victor)
+                if offspring != None:
+                    soldiers.append(offspring)
 
         for fighter in soldiers:
             if fighter.dna not in varieties:
