@@ -18,7 +18,7 @@ class soldier:
             self.dna = dna 
 
         if fertility == None:
-            self.fertility = .80
+            self.fertility = .60
         else:
             self.fertility = fertility
 
@@ -43,7 +43,7 @@ class soldier:
             self.damage = damage
 
         if accuracy == None:
-            self.accuracy = .5
+            self.accuracy = .3
         else:
             self.accuracy = accuracy
 
@@ -102,8 +102,8 @@ def reproduce(sol):
             else:
                 offspring.dna += 'd'
 
-        if offspring.damage <= 0:
-                offspring.damage = 1
+        if offspring.damage < 0:
+                offspring.damage = 0
     
         mutate = int(random.random() * 100)
     
@@ -231,7 +231,8 @@ def main():
     soldiers = []
     varieties = []
     primeDNA = {}
-    iterations = 17
+    MAX_POPULATION = 1000
+    iterations = 200
 
     abel = soldier('0', baseHealth = 10)
 
@@ -267,9 +268,10 @@ def main():
         for victor in winner_list:
             victor.health = victor.baseHealth
             for k in range(0, 3):
-                offspring = reproduce(victor)
-                if offspring != None:
-                    soldiers.append(offspring)
+                if len(soldiers) < MAX_POPULATION:
+                    offspring = reproduce(victor)
+                    if offspring != None:
+                        soldiers.append(offspring)
 
         for fighter in soldiers:
             if fighter.dna not in varieties:
