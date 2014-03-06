@@ -249,10 +249,25 @@ def fight(sol1, sol2):
     if sol1.id == sol2.id:
         return sol1
 
+    detect = sol1.stealth - sol2.detection
+    
+    if detect < 0:
+        detect = sol2.stealth - sol1.detection
+
+    look = random.random()
+
     if sol1.stealth > sol2.detection:
-        return sol1
-    elif sol2.stealth > sol1.detection:
-        return sol2
+        if look < detect:
+            return sol1
+
+    if sol2.stealth > sol1.detection:
+        if look < detect:
+            return sol2
+
+    #if sol1.stealth > sol2.detection:
+    #    return sol1
+    #elif sol2.stealth > sol1.detection:
+    #    return sol2
 
     first = random.random()
 
@@ -348,8 +363,29 @@ def writeDNAtoFile(filename, dnaDict = None, dnaList = None):
             for dna in dnaList:
                 f.write(dna + '\n')
 
+def sequence(dna):
+    traits = {}
+    seq = ''
+    for letter in dna:
+        increase = 0
+        if letter.islower():
+            increase = -1
+        else:
+            increase = 1
+        letter = letter.upper()
+        if letter not in traits:
+            traits[letter] = increase
+        else:
+            traits[letter] += increase
+
+    for trait in traits.keys():
+        seq += trait + ': ' + str(traits[trait]) + '\n'
+        
+    return seq
+
 def main():
     soldiers = []
+    sequences = []
     varieties = []
     survivingDNA = []
     primeDNA = {}
@@ -396,19 +432,24 @@ def main():
                         soldiers.append(offspring)
 
         for fighter in soldiers:
+
             if fighter.dna not in varieties:
                 varieties.append(fighter.dna)
                 primeDNA[fighter.dna] = fighter.wins
             else:
                 primeDNA[fighter.dna] += fighter.wins
+
             if fighter.dna not in survivingDNA:
                 survivingDNA.append(fighter.dna)
+
+            sequences.append(sequence(fighter.dna))
         
 
     sortedDNA = OrderedDict(sorted(primeDNA.items(), key=lambda primeDNA: primeDNA[1], reverse=True))
 
     writeDNAtoFile('dna.txt', dnaDict = sortedDNA)
     writeDNAtoFile('survivors.txt', dnaList = survivingDNA)
+    writeDNAtoFile('sequences.txt', dnaList = sequences)
 
 main()
 
