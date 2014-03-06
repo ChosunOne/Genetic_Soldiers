@@ -121,7 +121,7 @@ def reproduce(sol):
 
         if mutate <= MUTATE_THRESHOLD:
             old = offspring.baseHealth
-            offspring.baseHealth = random.randint(offspring.baseHealth - 5, offspring.baseHealth + 5)
+            offspring.baseHealth = offspring.baseHealth + (random.random() - .5) * .3
             offspring.health = offspring.baseHealth
             if old < offspring.baseHealth:
                 offspring.dna += 'H'
@@ -132,7 +132,7 @@ def reproduce(sol):
 
         if mutate <= MUTATE_THRESHOLD:
             old = offspring.damage
-            offspring.damage = random.randint(offspring.damage - 1, offspring.damage + 1)
+            offspring.damage = offspring.damage + (random.random() - .5) * .3
             if old < offspring.damage:
                 offspring.dna += 'D'
             else:
@@ -145,7 +145,7 @@ def reproduce(sol):
     
         if mutate <= MUTATE_THRESHOLD:
             old = offspring.armor
-            offspring.armor = random.randint(offspring.armor - 1, offspring.armor + 1)
+            offspring.armor = offspring.armor + (random.random() - .5) * .3
             if old < offspring.armor:
                 offspring.dna += 'R'
             else:
@@ -158,9 +158,9 @@ def reproduce(sol):
 
         if mutate <= MUTATE_THRESHOLD:
             old = offspring.accuracy
-            offspring.accuracy = offspring.accuracy + (random.random() - .5) * .1
+            offspring.accuracy = offspring.accuracy + (random.random() - .5) * .3
             if offspring.accuracy > 1:
-                offpsring.accuracy = 1
+                offspring.accuracy = 1
             elif offspring.accuracy < 0:
                 offspring.accuracy = 0
             if old < offspring.accuracy:
@@ -172,7 +172,7 @@ def reproduce(sol):
 
         if mutate <= MUTATE_THRESHOLD:
             old = offspring.fertility
-            offspring.fertility = offspring.fertility + (random.random() - .5) * .02
+            offspring.fertility = offspring.fertility + (random.random() - .5) * .3
             if offspring.fertility > 1:
                 offspring.fertility = 1
             elif offspring.fertility < 0:
@@ -186,7 +186,7 @@ def reproduce(sol):
 
         if mutate <= MUTATE_THRESHOLD:
             old = offspring.stealth
-            offspring.stealth = offspring.stealth + (random.random() - .5) * .02
+            offspring.stealth = offspring.stealth + (random.random() - .5) * .3
             if offspring.stealth > 1:
                 offspring.stealth = 1
             elif offspring.stealth < 0:
@@ -200,7 +200,7 @@ def reproduce(sol):
 
         if mutate <= MUTATE_THRESHOLD:
             old = offspring.detection
-            offspring.detection = offspring.detection + (random.random() - .5) * .02
+            offspring.detection = offspring.detection + (random.random() - .5) * .3
             if offspring.detection > 1:
                 offspring.detection = 1
             elif offspring.detection < 0:
@@ -214,7 +214,7 @@ def reproduce(sol):
 
         if mutate <= MUTATE_THRESHOLD:
             old = offspring.pursuit
-            offspring.pursuit = offspring.pursuit + (random.random() - .5) * .02
+            offspring.pursuit = offspring.pursuit + (random.random() - .5) * .3
             if offspring.pursuit > 1:
                 offspring.pursuit = 1
             elif offspring.pursuit < 0:
@@ -228,7 +228,7 @@ def reproduce(sol):
 
         if mutate <= MUTATE_THRESHOLD:
             old = offspring.escape
-            offspring.escape = offspring.escape + (random.random() - .5) * .02
+            offspring.escape = offspring.escape + (random.random() - .5) * .3
             if offspring.escape > 1:
                 offspring.escape = 1
             elif offspring.escape < 0:
@@ -392,14 +392,15 @@ def main():
     MAX_POPULATION = 2000
     iterations = 200
 
-    abel = soldier('0', baseHealth = 10)
-    cain = soldier('1', baseHealth = 13)
+    abel = soldier('0', baseHealth = 10, stealth = .2, escape = .1)
+    cain = soldier('1', baseHealth = 10, fertility = .7)
 
     soldiers.append(abel)
     soldiers.append(cain)
 
     for x in range(0, iterations):
         survivingDNA = []
+        sequences = []
 
         matches = matchfighters(soldiers)
         winner_list = []
