@@ -95,12 +95,35 @@ class soldier:
             pass
         else:
             roll = random.random()
-            if roll < self.accuracy:
+            dodge = self.accuracy - soldier.agility
+
+            if roll < dodge:
                 soldier.health = soldier.health - (self.damage - soldier.armor)
 
             #DEBUG
             #print(self.name, 'attacked', soldier.name, 'for', self.damage - soldier.armor, 'damage.')
             #print(soldier.name, 'now has', soldier.health, 'health')
+
+    def serialize(self):
+
+        string = ''
+        string += 'id: ' + str(self.id) + '\n'
+        string += 'name: ' + self.name + '\n'
+        string += 'baseHealth: ' + str(self.baseHealth) + '\n'
+        string += 'health: ' + str(self.health) + '\n'
+        string += 'damage: ' + str(self.damage) + '\n'
+        string += 'armor: ' + str(self.armor) + '\n'
+        string += 'accuracy: ' + str(self.accuracy) + '\n'
+        string += 'agility: ' + str(self.agility) + '\n'
+        string += 'fertility: ' + str(self.fertility) + '\n'
+        string += 'stealth: ' + str(self.stealth) + '\n'
+        string += 'detection: ' + str(self.detection) + '\n'
+        string += 'pursuit: ' + str(self.pursuit) + '\n'
+        string += 'escape: ' + str(self.escape) + '\n'
+        string += 'dna: ' + self.dna + '\n' 
+
+        return string
+
 
 def reproduce(sol):
     fertile = random.random()
@@ -128,7 +151,7 @@ def reproduce(sol):
 
         if mutate <= MUTATE_THRESHOLD:
             old = offspring.baseHealth
-            offspring.baseHealth = offspring.baseHealth + (random.random() - .5) * .3
+            offspring.baseHealth += (random.random() - .5)
             offspring.health = offspring.baseHealth
             if old < offspring.baseHealth:
                 offspring.dna += 'H'
@@ -139,7 +162,7 @@ def reproduce(sol):
 
         if mutate <= MUTATE_THRESHOLD:
             old = offspring.damage
-            offspring.damage = offspring.damage + (random.random() - .5) * .3
+            offspring.damage += (random.random() - .5)
             if old < offspring.damage:
                 offspring.dna += 'D'
             else:
@@ -152,7 +175,7 @@ def reproduce(sol):
     
         if mutate <= MUTATE_THRESHOLD:
             old = offspring.armor
-            offspring.armor = offspring.armor + (random.random() - .5) * .3
+            offspring.armor += (random.random() - .5)
             if old < offspring.armor:
                 offspring.dna += 'R'
             else:
@@ -165,11 +188,11 @@ def reproduce(sol):
 
         if mutate <= MUTATE_THRESHOLD:
             old = offspring.accuracy
-            offspring.accuracy = offspring.accuracy + (random.random() - .5) * .3
-            if offspring.accuracy > 1:
-                offspring.accuracy = 1
-            elif offspring.accuracy < 0:
-                offspring.accuracy = 0
+            offspring.accuracy +=(random.random() - .5)
+            #if offspring.accuracy > 1:
+            #    offspring.accuracy = 1
+            #elif offspring.accuracy < 0:
+            #    offspring.accuracy = 0
             if old < offspring.accuracy:
                 offspring.dna += 'A'
             else:
@@ -179,11 +202,11 @@ def reproduce(sol):
 
         if mutate <= MUTATE_THRESHOLD:
             old = offspring.agility
-            offspring.agility = offspring.agility + (random.random() - .5) * .3
-            if offspring.agility > 1:
-                offspring.agility = 1
-            elif offspring.agility < 0:
-                offspring.agility = 0
+            offspring.agility += (random.random() - .5)
+            #if offspring.agility > 1:
+            #    offspring.agility = 1
+            #elif offspring.agility < 0:
+            #    offspring.agility = 0
             if old < offspring.agility:
                 offspring.dna += 'G'
             else:
@@ -193,7 +216,7 @@ def reproduce(sol):
 
         if mutate <= MUTATE_THRESHOLD:
             old = offspring.fertility
-            offspring.fertility = offspring.fertility + (random.random() - .5) * .3
+            offspring.fertility += (random.random() - .5) * .3
             if offspring.fertility > 1:
                 offspring.fertility = 1
             elif offspring.fertility < 0:
@@ -207,11 +230,11 @@ def reproduce(sol):
 
         if mutate <= MUTATE_THRESHOLD:
             old = offspring.stealth
-            offspring.stealth = offspring.stealth + (random.random() - .5) * .3
-            if offspring.stealth > 1:
-                offspring.stealth = 1
-            elif offspring.stealth < 0:
-                offspring.stealth = 0
+            offspring.stealth += (random.random() - .5)
+            #if offspring.stealth > 1:
+            #    offspring.stealth = 1
+            #elif offspring.stealth < 0:
+            #    offspring.stealth = 0
             if old < offspring.stealth:
                 offspring.dna += 'S'
             else:
@@ -221,11 +244,11 @@ def reproduce(sol):
 
         if mutate <= MUTATE_THRESHOLD:
             old = offspring.detection
-            offspring.detection = offspring.detection + (random.random() - .5) * .3
-            if offspring.detection > 1:
-                offspring.detection = 1
-            elif offspring.detection < 0:
-                offspring.detection = 0
+            offspring.detection += (random.random() - .5)
+            #if offspring.detection > 1:
+            #    offspring.detection = 1
+            #elif offspring.detection < 0:
+            #    offspring.detection = 0
             if old < offspring.detection:
                 offspring.dna += 'T'
             else:
@@ -235,11 +258,11 @@ def reproduce(sol):
 
         if mutate <= MUTATE_THRESHOLD:
             old = offspring.pursuit
-            offspring.pursuit = offspring.pursuit + (random.random() - .5) * .3
-            if offspring.pursuit > 1:
-                offspring.pursuit = 1
-            elif offspring.pursuit < 0:
-                offspring.pursuit = 0
+            offspring.pursuit += (random.random() - .5)
+            #if offspring.pursuit > 1:
+            #    offspring.pursuit = 1
+            #elif offspring.pursuit < 0:
+            #    offspring.pursuit = 0
             if old < offspring.pursuit:
                 offspring.dna += 'P'
             else:
@@ -249,11 +272,11 @@ def reproduce(sol):
 
         if mutate <= MUTATE_THRESHOLD:
             old = offspring.escape
-            offspring.escape = offspring.escape + (random.random() - .5) * .3
-            if offspring.escape > 1:
-                offspring.escape = 1
-            elif offspring.escape < 0:
-                offspring.escape = 0
+            offspring.escape += (random.random() - .5)
+            #if offspring.escape > 1:
+            #    offspring.escape = 1
+            #elif offspring.escape < 0:
+            #    offspring.escape = 0
             if old < offspring.escape:
                 offspring.dna += 'E'
             else:
@@ -432,9 +455,10 @@ def main():
     sequences = []
     varieties = []
     survivingDNA = []
+    profiles = []
     primeDNA = {}
-    MAX_POPULATION = 2000
-    iterations = 200
+    MAX_POPULATION = 20
+    iterations = 10000
 
     abel = soldier('0', baseHealth = 10, stealth = .2, escape = .1)
     cain = soldier('1', baseHealth = 10, fertility = .7)
@@ -445,6 +469,7 @@ def main():
     for x in range(0, iterations):
         survivingDNA = []
         sequences = []
+        profiles = []
 
         matches = matchfighters(soldiers)
         winner_list = []
@@ -488,6 +513,7 @@ def main():
                 survivingDNA.append(fighter.dna)
 
             sequences.append(sequence(fighter.dna))
+            profiles.append(fighter.serialize())
         
 
     sortedDNA = OrderedDict(sorted(primeDNA.items(), key=lambda primeDNA: primeDNA[1], reverse=True))
@@ -495,6 +521,7 @@ def main():
     writeDNAtoFile('dna.txt', dnaDict = sortedDNA)
     writeDNAtoFile('survivors.txt', dnaList = survivingDNA)
     writeDNAtoFile('sequences.txt', dnaList = sequences)
+    writeDNAtoFile('profiles.txt', dnaList = profiles)
 
 main()
 
