@@ -13,7 +13,8 @@ class soldier:
                  health = None, 
                  damage = None, 
                  armor = None, 
-                 accuracy = None, 
+                 accuracy = None,
+                 agility = None, 
                  fertility = None,
                  stealth = None,
                  detection = None,
@@ -58,6 +59,11 @@ class soldier:
             self.accuracy = .3
         else:
             self.accuracy = accuracy
+
+        if agility == None:
+            self.agility = 0
+        else:
+            self.agility = agility
 
         if armor == None:
             self.armor = 0
@@ -105,7 +111,8 @@ def reproduce(sol):
                             baseHealth = sol.baseHealth, 
                             damage = sol.damage, 
                             armor = sol.armor, 
-                            accuracy = sol.accuracy, 
+                            accuracy = sol.accuracy,
+                            agility = sol.agility, 
                             fertility = sol.fertility,
                             stealth = sol.stealth,
                             detection = sol.detection,
@@ -167,6 +174,20 @@ def reproduce(sol):
                 offspring.dna += 'A'
             else:
                 offspring.dna += 'a'
+
+        mutate = int(random.random() * 100)
+
+        if mutate <= MUTATE_THRESHOLD:
+            old = offspring.agility
+            offspring.agility = offspring.agility + (random.random() - .5) * .3
+            if offspring.agility > 1:
+                offspring.agility = 1
+            elif offspring.agility < 0:
+                offspring.agility = 0
+            if old < offspring.agility:
+                offspring.dna += 'G'
+            else:
+                offspring.dna += 'g'
 
         mutate = int(random.random() * 100)
 
@@ -322,18 +343,41 @@ def fight(sol1, sol2):
 
     else:
         while (sol1.health > 0) and (sol2.health > 0) and (rounds < 3000):
+            
+            if rounds % 5 == 0 or rounds == 0:
+                escape = sol1.escape - sol2.pursuit
+
+                if escape < 0:
+                    escape = sol2.escape - sol1.pursuit
+
+                run = random.random()
+
+                if sol1.escape > sol2.pursuit:
+                    if run < escape:
+                        return sol1
+
+                if sol2.escape > sol2.pursuit:
+                    if run < escape:
+                        return sol2
+
             sol2.attack(sol1)
+
+
             if sol1.health > 0:
                 sol1.attack(sol2)
+
             rounds += 1
+
         if sol1.health > 0:
             winner = sol1
             winner.wins += 1
             return winner
+
         elif sol2.health > 0:
             winner = sol2
             winner.wins += 1
             return winner
+            
         else:
             return None
 
