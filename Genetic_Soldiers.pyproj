@@ -17,6 +17,8 @@
   <ItemGroup>
     <Compile Include="soldiers.py" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="dna.txt" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" />
 </Project>

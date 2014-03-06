@@ -7,7 +7,19 @@ from collections import OrderedDict
 random.seed()
 
 class soldier:
-    def __init__(self, name = None, baseHealth = None, health = None, damage = None, armor = None, accuracy = None, fertility = None, dna = None):
+    def __init__(self, 
+                 name = None, 
+                 baseHealth = None, 
+                 health = None, 
+                 damage = None, 
+                 armor = None, 
+                 accuracy = None, 
+                 fertility = None,
+                 stealth = None,
+                 detection = None,
+                 pursuit = None,
+                 escape = None, 
+                 dna = None):
 
         self.id = random.random() * 100000000000
         self.wins = 0
@@ -52,6 +64,26 @@ class soldier:
         else:
             self.armor = armor
 
+        if stealth == None:
+            self.stealth = 0
+        else:
+            self.stealth = stealth
+
+        if detection == None:
+            self.detection = .01
+        else:
+            self.detection = detection
+
+        if pursuit == None:
+            self.pursuit = .01
+        else:
+            self.pursuit = pursuit
+
+        if escape == None:
+            self.escape = 0
+        else:
+            self.escape = escape
+
     def attack(self, soldier):
         if self.damage - soldier.armor <= 0:
             pass
@@ -74,7 +106,11 @@ def reproduce(sol):
                             damage = sol.damage, 
                             armor = sol.armor, 
                             accuracy = sol.accuracy, 
-                            fertility = sol.fertility, 
+                            fertility = sol.fertility,
+                            stealth = sol.stealth,
+                            detection = sol.detection,
+                            pursuit = sol.pursuit,
+                            escape = sol.escape, 
                             dna = sol.dna)
 
         if mutate <= MUTATE_THRESHOLD:
@@ -102,8 +138,8 @@ def reproduce(sol):
             else:
                 offspring.dna += 'd'
 
-        if offspring.damage < 0:
-                offspring.damage = 0
+        #if offspring.damage < 0:
+        #        offspring.damage = 0
     
         mutate = int(random.random() * 100)
     
@@ -115,8 +151,8 @@ def reproduce(sol):
             else:
                 offspring.dna += 'r'
 
-        if offspring.armor < 0:
-            offspring.armor = 0
+        #if offspring.armor < 0:
+        #    offspring.armor = 0
 
         mutate = int(random.random() * 100)
 
@@ -146,6 +182,62 @@ def reproduce(sol):
             else:
                 offspring.dna += 'f'
 
+        mutate = int(random.random() * 100)
+
+        if mutate <= MUTATE_THRESHOLD:
+            old = offspring.stealth
+            offspring.stealth = offspring.stealth + (random.random() - .5) * .02
+            if offspring.stealth > 1:
+                offspring.stealth = 1
+            elif offspring.stealth < 0:
+                offspring.stealth = 0
+            if old < offspring.stealth:
+                offspring.dna += 'S'
+            else:
+                offspring.dna += 's'
+
+        mutate = int(random.random() * 100)
+
+        if mutate <= MUTATE_THRESHOLD:
+            old = offspring.detection
+            offspring.detection = offspring.detection + (random.random() - .5) * .02
+            if offspring.detection > 1:
+                offspring.detection = 1
+            elif offspring.detection < 0:
+                offspring.detection = 0
+            if old < offspring.detection:
+                offspring.dna += 'T'
+            else:
+                offspring.dna += 't'
+
+        mutate = int(random.random() * 100)
+
+        if mutate <= MUTATE_THRESHOLD:
+            old = offspring.pursuit
+            offspring.pursuit = offspring.pursuit + (random.random() - .5) * .02
+            if offspring.pursuit > 1:
+                offspring.pursuit = 1
+            elif offspring.pursuit < 0:
+                offspring.pursuit = 0
+            if old < offspring.pursuit:
+                offspring.dna += 'P'
+            else:
+                offspring.dna += 'p'
+
+        mutate = int(random.random() * 100)
+
+        if mutate <= MUTATE_THRESHOLD:
+            old = offspring.escape
+            offspring.escape = offspring.escape + (random.random() - .5) * .02
+            if offspring.escape > 1:
+                offspring.escape = 1
+            elif offspring.escape < 0:
+                offspring.escape = 0
+            if old < offspring.escape:
+                offspring.dna += 'E'
+            else:
+                offspring.dna += 'e'
+
         return offspring
     return None
 
@@ -155,8 +247,12 @@ def fight(sol1, sol2):
     sol2.health = sol2.baseHealth
 
     if sol1.id == sol2.id:
-        winner = sol1
         return sol1
+
+    if sol1.stealth > sol2.detection:
+        return sol1
+    elif sol2.stealth > sol1.detection:
+        return sol2
 
     first = random.random()
 
@@ -172,18 +268,40 @@ def fight(sol1, sol2):
 
     if first > .5:
         while (sol1.health > 0) and (sol2.health > 0) and (rounds < 3000):
+
+            if rounds % 5 == 0 or rounds == 0:
+                escape = sol1.escape - sol2.pursuit
+
+                if escape < 0:
+                    escape = sol2.escape - sol1.pursuit
+
+                run = random.random()
+
+                if sol1.escape > sol2.pursuit:
+                    if run < escape:
+                        return sol1
+
+                if sol2.escape > sol2.pursuit:
+                    if run < escape:
+                        return sol2
+
             sol1.attack(sol2)
+
             if sol2.health > 0:
                 sol2.attack(sol1)
+
             rounds += 1
+
         if sol1.health > 0:
             winner = sol1
             winner.wins += 1
             return winner
+
         elif sol2.health > 0:
             winner = sol2
             winner.wins += 1
             return winner
+
         else:
             return None
 
@@ -221,17 +339,21 @@ def matchfighters(soldier_list):
 
     return tuplelist
 
-def writeDNAtoFile(filename, dnaList):
-    #dnaList.sort()
+def writeDNAtoFile(filename, dnaDict = None, dnaList = None):
     with open(filename, 'w') as f:
-        for dna in dnaList.keys():
-            f.write(dna + '    ' + str(dnaList[dna]) + '\n')
+        if dnaDict != None:
+            for dna in dnaDict.keys():
+                f.write(dna + '    ' + str(dnaDict[dna]) + '\n')
+        elif dnaList != None:
+            for dna in dnaList:
+                f.write(dna + '\n')
 
 def main():
     soldiers = []
     varieties = []
+    survivingDNA = []
     primeDNA = {}
-    MAX_POPULATION = 1000
+    MAX_POPULATION = 2000
     iterations = 200
 
     abel = soldier('0', baseHealth = 10)
@@ -241,6 +363,7 @@ def main():
     soldiers.append(cain)
 
     for x in range(0, iterations):
+        survivingDNA = []
 
         matches = matchfighters(soldiers)
         winner_list = []
@@ -278,11 +401,14 @@ def main():
                 primeDNA[fighter.dna] = fighter.wins
             else:
                 primeDNA[fighter.dna] += fighter.wins
+            if fighter.dna not in survivingDNA:
+                survivingDNA.append(fighter.dna)
         
 
     sortedDNA = OrderedDict(sorted(primeDNA.items(), key=lambda primeDNA: primeDNA[1], reverse=True))
 
-    writeDNAtoFile('dna.txt', sortedDNA)
+    writeDNAtoFile('dna.txt', dnaDict = sortedDNA)
+    writeDNAtoFile('survivors.txt', dnaList = survivingDNA)
 
 main()
 
