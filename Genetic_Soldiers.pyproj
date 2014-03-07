@@ -19,6 +19,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="dna.txt" />
+    <Content Include="profiles.txt" />
     <Content Include="sequences.txt" />
     <Content Include="survivors.txt" />
   </ItemGroup>
